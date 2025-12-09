@@ -1,0 +1,97 @@
+### Get all directors
+GET http://localhost:8080/api/directors
+
+### Create Director
+POST http://localhost:8080/api/directors
+Content-Type: application/json
+
+{
+  "name": "James Cameron"
+}
+
+### Get director by id
+GET http://localhost:8080/api/directors/1
+
+### Update director
+PUT http://localhost:8080/api/directors/1
+Content-Type: application/json
+
+{
+  "name": "New Nolan"
+}
+
+### Delete director
+DELETE http://localhost:8080/api/directors/1
+
+### Create movie
+POST http://localhost:8080/api/movies
+Content-Type: application/json
+
+{
+  "title": "Inception",
+  "releaseYear": 2010,
+  "directorId": 3
+}
+
+### Get movie by id
+GET http://localhost:8080/api/movies/3
+
+### Update movie
+PUT http://localhost:8080/api/movies/1
+Content-Type: application/json
+
+{
+  "title": "Inception Updated",
+  "releaseYear": 2012,
+  "directorId": 2
+}
+
+### Delete movie
+DELETE http://localhost:8080/api/movies/1
+
+### getList
+POST http://localhost:8080/api/movies/_list
+Content-Type: application/json
+
+{
+  "titleContains": "",
+  "directorId": null,
+  "yearFrom": null,
+  "yearTo": null,
+  "page": 0,
+  "size": 2
+}
+
+### Upload movies
+POST http://localhost:8080/api/movies/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="file"; filename="movies-import.json"
+Content-Type: application/json
+
+< ./movies-import.json
+--WebAppBoundary--
+
+
+### Movies report
+POST http://localhost:8080/api/movies/_report
+Content-Type: application/json
+Accept: text/plain
+
+{
+  "titleContains": null,
+  "directorId": null,
+  "yearFrom": null,
+  "yearTo": null,
+  "page": 0,
+  "size": 100
+}
+>> ./movies-report.csv
+
+
+
+
+
+
+

@@ -1,0 +1,17 @@
+[
+  {
+    "title": "Inception",
+    "releaseYear": 2010,
+    "directorId": 1
+  },
+  {
+    "title": "Django Unchained",
+    "releaseYear": 2012,
+    "directorId": 2
+  },
+  {
+    "title": "Avatar",
+    "releaseYear": 2009,
+    "directorId": 3
+  }
+]

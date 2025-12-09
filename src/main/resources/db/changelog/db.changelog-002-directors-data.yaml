@@ -1,0 +1,23 @@
+databaseChangeLog:
+  - changeSet:
+      id: 003-insert-directors
+      author: student
+      changes:
+        - insert:
+            tableName: director
+            columns:
+              - column:
+                  name: name
+                  value: "Christopher Nolan"
+        - insert:
+            tableName: director
+            columns:
+              - column:
+                  name: name
+                  value: "Quentin Tarantino"
+        - insert:
+            tableName: director
+            columns:
+              - column:
+                  name: name
+                  value: "James Cameron"
