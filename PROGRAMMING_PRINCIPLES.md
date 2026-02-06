@@ -7,7 +7,7 @@
 
 У проєкті логіка розділена між контролерами, сервісами та репозиторіями.
 
-### Приклад
+### Прикладcc
 - Контролер відповідає лише за обробку HTTP-запитів:
     - [controller/MovieController.java](src/main/java/ua/course/moviesservice/controller/MovieController.java)
 - Бізнес-логіка знаходиться в сервісі:
