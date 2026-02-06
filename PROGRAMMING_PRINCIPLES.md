@@ -7,13 +7,13 @@
 
 У проєкті логіка розділена між контролерами, сервісами та репозиторіями.
 
-### Прикладcc
+### Приклад
 - Контролер відповідає лише за обробку HTTP-запитів:
-    - [controller/MovieController.java](src/main/java/ua/course/moviesservice/controller/MovieController.java)
+    - [controller/MovieController.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/controller/MovieController.java)
 - Бізнес-логіка знаходиться в сервісі:
-    - [service/MovieService.java](src/main/java/ua/course/moviesservice/service/MovieService.java)
+    - [service/MovieService.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java)
 - Доступ до БД реалізований у репозиторії:
-    - [repository/MovieRepository.java](src/main/java/ua/course/moviesservice/repository/MovieRepository.java)
+    - [repository/MovieRepository.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/repository/MovieRepository.java)
 
 Таким чином кожен клас виконує лише одну роль.
 
@@ -27,10 +27,10 @@
 ### Приклад
 
 - Інтерфейс:
-    - [repository/MovieRepository.java](src/main/java/ua/course/moviesservice/repository/MovieRepository.java#L14-L28)
+    - [repository/MovieRepository.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/repository/MovieRepository.java#L12)
   
 - Використання в сервісі:
-    - [service/MovieService.java](src/main/java/ua/course/moviesservice/service/MovieService.java#L87-L99)
+    - [service/MovieService.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L28-L36)
   
 Сервіс не залежить від конкретної реалізації.
 
@@ -44,9 +44,9 @@
 
 ### Приклад
 
-- [repository/MovieRepository.java](src/main/java/ua/course/moviesservice/repository/MovieRepository.java#L1-L12)
+- [repository/MovieRepository.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/repository/MovieRepository.java#L12)
 
-- [MovieService – інʼєкція MovieRepository](src/main/java/ua/course/moviesservice/service/MovieService.java#L27-L33)
+- MovieService – інʼєкція [MovieRepository](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L28)
 
 MovieRepository можна використовувати як JpaRepository без зміни поведінки.
 
@@ -60,9 +60,10 @@ MovieRepository можна використовувати як JpaRepository б�
 
 ### Приклад
 
-- [dto/MovieRequestDto.java](src/main/java/ua/course/moviesservice/dto/MovieCreateUpdateDto.java)  
+- [dto/MovieCreateUpdateDto.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/dto/MovieCreateUpdateDto.java)  
 
-- [dto/MovieResponseDto.java](src/main/java/ua/course/moviesservice/dto/MovieImportResultDto.java)
+- [dto/MovieDetailsDto.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/dto/MovieDetailsDto.java)
+
 Кожен DTO містить лише необхідні поля.
 
 ---
@@ -75,9 +76,9 @@ MovieRepository можна використовувати як JpaRepository б�
 
 ### Приклад
 
-- [controller/MovieController.java](src/main/java/ua/course/moviesservice/controller/MovieController.java#L20-L22)  
+- [controller/MovieController.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/controller/MovieController.java#L26-L30)  
 
-- [service/MovieService.java](src/main/java/ua/course/moviesservice/service/MovieService.java#L27-L41)
+- [service/MovieService.java](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L32-L36)
 
 Використовується dependency injection через конструктор.
 
@@ -91,13 +92,12 @@ MovieRepository можна використовувати як JpaRepository б�
 
 ### Приклад
 
-- [MovieService – mapToDetailsDto()](src/main/java/ua/course/moviesservice/service/MovieService.java#L55-L62)
-- [MovieService – використання mapToDetailsDto](src/main/java/ua/course/moviesservice/service/MovieService.java#L29-L33)
+- MovieService – [movieMapper.toDetailsDto()](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L43)
+- MovieService – використання [movieMapper.toListItemDto()](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L97-L99)
+- MovieService – [emptyToNull()](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L104-L106)
 
-- [MovieService – emptyToNull()](src/main/java/ua/course/moviesservice/service/MovieService.java#L84-L86)
 
-
-Одна реалізація використовується кількома ендпоінтами.
+Одна реалізація використовується кількома методами.
 
 ---
 
@@ -115,19 +115,19 @@ MovieRepository можна використовувати як JpaRepository б�
 
 ### Приклад структури
 
-- [controller](src/main/java/ua/course/moviesservice/controller)
-- [service](src/main/java/ua/course/moviesservice/service)
-- [repository](src/main/java/ua/course/moviesservice/repository)
-- [entity](src/main/java/ua/course/moviesservice/entity)
-- [dto](src/main/java/ua/course/moviesservice/dto)
+- [controller](https://github.com/matganzovka90-bit/movie-service/tree/main/src/main/java/ua/course/moviesservice/controller)
+- [service](https://github.com/matganzovka90-bit/movie-service/tree/main/src/main/java/ua/course/moviesservice/service)
+- [repository](https://github.com/matganzovka90-bit/movie-service/tree/main/src/main/java/ua/course/moviesservice/repository)
+- [entity](https://github.com/matganzovka90-bit/movie-service/tree/main/src/main/java/ua/course/moviesservice/entity)
+- [dto](https://github.com/matganzovka90-bit/movie-service/tree/main/src/main/java/ua/course/moviesservice/dto)
 
 ### Приклад файлів з різних шарів
 
-- [MovieController](src/main/java/ua/course/moviesservice/controller/MovieController.java)
-- [MovieService](src/main/java/ua/course/moviesservice/service/MovieService.java)
-- [MovieRepository](src/main/java/ua/course/moviesservice/repository/MovieRepository.java)
-- [Movie](src/main/java/ua/course/moviesservice/entity/Movie.java)
-- [MovieDetailsDto](src/main/java/ua/course/moviesservice/dto/MovieDetailsDto.java)
+- [MovieController](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/controller/MovieController.java)
+- [MovieService](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java)
+- [MovieRepository](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/repository/MovieRepository.java)
+- [Movie](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/entity/Movie.java)
+- [MovieDetailsDto](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/dto/MovieDetailsDto.java)
 
 ### Пояснення
 
@@ -144,10 +144,10 @@ MovieRepository можна використовувати як JpaRepository б�
 
 ### Приклад
 
-- [MovieService](src/main/java/ua/course/moviesservice/service/MovieService.java#L1-L40)
-- [MovieService – метод getById](src/main/java/ua/course/moviesservice/service/MovieService.java#L25-L33)
-- [MovieService – метод create](src/main/java/ua/course/moviesservice/service/MovieService.java#L35-L44)
-- [MovieService – метод delete](src/main/java/ua/course/moviesservice/service/MovieService.java#L58-L70)
+- [MovieService](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java)
+- MovieService – метод [getById](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L38-L44)
+- MovieService – метод [create](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L46-L54)
+- MovieService – метод [delete](https://github.com/matganzovka90-bit/movie-service/blob/main/src/main/java/ua/course/moviesservice/service/MovieService.java#L72-L80)
 
 ---
 
