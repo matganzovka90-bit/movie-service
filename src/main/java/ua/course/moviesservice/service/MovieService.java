@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.course.moviesservice.dto.*;
 import ua.course.moviesservice.entity.Director;
 import ua.course.moviesservice.entity.Movie;
+import ua.course.moviesservice.mapper.MovieMapper;
 import ua.course.moviesservice.repository.DirectorRepository;
 import ua.course.moviesservice.repository.MovieRepository;
 
@@ -26,10 +27,12 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final DirectorRepository directorRepository;
+    private final MovieMapper movieMapper;
 
-    public MovieService(MovieRepository movieRepository, DirectorRepository directorRepository) {
+    public MovieService(MovieRepository movieRepository, DirectorRepository directorRepository, MovieMapper movieMapper) {
         this.movieRepository = movieRepository;
         this.directorRepository = directorRepository;
+        this.movieMapper = movieMapper;
     }
 
     public MovieDetailsDto getByid(Long id){
@@ -37,7 +40,7 @@ public class MovieService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Movie with id " + id + " not found"));
 
-        return mapToDetailsDto(movie);
+        return movieMapper.toDetailsDto(movie);
     }
 
     public MovieDetailsDto create (MovieCreateUpdateDto dto) {
@@ -47,7 +50,7 @@ public class MovieService {
 
         Movie movie = new Movie(dto.getTitle(), dto.getReleaseYear(), director);
         Movie saved = movieRepository.save(movie);
-        return mapToDetailsDto(saved);
+        return movieMapper.toDetailsDto(saved);
     }
 
     public MovieDetailsDto update (Long id, MovieCreateUpdateDto dto){
@@ -63,7 +66,7 @@ public class MovieService {
         movie.setDirector(director);
         movie.setReleaseYear(dto.getReleaseYear());
 
-        return mapToDetailsDto(movie);
+        return movieMapper.toDetailsDto(movie);
     }
 
     public void delete(Long id) {
@@ -74,13 +77,6 @@ public class MovieService {
             );
         }
         movieRepository.deleteById(id);
-    }
-
-    private MovieDetailsDto mapToDetailsDto(Movie movie) {
-        Director director = movie.getDirector();
-        DirectorDto directorDto = new DirectorDto(director.getId(), director.getName());
-
-        return new MovieDetailsDto(movie.getId(), movie.getTitle(), movie.getReleaseYear(), directorDto);
     }
 
 
@@ -99,14 +95,7 @@ public class MovieService {
         );
 
         var items = moviePage.getContent().stream()
-                .map(m -> new MovieListItemDto(
-                        m.getTitle(),
-                        m.getReleaseYear(),
-                        new DirectorDto(
-                                m.getDirector().getId(),
-                                m.getDirector().getName()
-                        )
-                ))
+                .map(movieMapper::toListItemDto)
                 .toList();
 
         return new PagedResultDto<>(items, moviePage.getTotalPages());
