@@ -27,20 +27,4 @@ public interface MovieRepository extends JpaRepository<Movie, Long> {
             Pageable pageable
     );
 
-
-    @Query("""
-       SELECT m FROM Movie m
-       WHERE (:title IS NULL 
-              OR LOWER(m.title) LIKE CONCAT('%', LOWER(CAST(:title AS string)), '%'))
-         AND (:directorId IS NULL OR m.director.id = :directorId)
-         AND (:yearFrom IS NULL OR m.releaseYear >= :yearFrom)
-         AND (:yearTo IS NULL OR m.releaseYear <= :yearTo)
-       """)
-    List<Movie> searchMoviesNoPaging(
-            @Param("title") String title,
-            @Param("directorId") Long directorId,
-            @Param("yearFrom") Integer yearFrom,
-            @Param("yearTo") Integer yearTo
-    );
-
 }
