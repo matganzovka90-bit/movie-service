@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import ua.course.moviesservice.dto.*;
+import ua.course.moviesservice.service.ImportService;
 import ua.course.moviesservice.service.MovieService;
+import ua.course.moviesservice.service.ReportService;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +20,13 @@ import java.io.InputStream;
 @RequestMapping("/api/movies")
 public class MovieController {
     private final MovieService movieService;
+    private final ReportService reportService;
+    private final ImportService importService;
 
-    public MovieController(MovieService movieService) {
+    public MovieController(MovieService movieService, ReportService reportService, ImportService importService) {
         this.movieService = movieService;
+        this.reportService = reportService;
+        this.importService = importService;
     }
 
     @GetMapping("/{id}")
@@ -52,7 +58,7 @@ public class MovieController {
 
     @PostMapping("/_report")
     public ResponseEntity<byte[]> getReport(@RequestBody MovieListRequestDto request) {
-        byte[] csv = movieService.generateReportCsv(request);
+        byte[] csv = reportService.generateReportCsv(request);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.TEXT_PLAIN);
@@ -68,7 +74,7 @@ public class MovieController {
         }
 
         try (InputStream is = file.getInputStream()) {
-            return movieService.importMovies(is);
+            return importService.importMovies(is);
         } catch (IOException e) {
             throw new ResponseStatusException(
                     HttpStatus.BAD_REQUEST,
