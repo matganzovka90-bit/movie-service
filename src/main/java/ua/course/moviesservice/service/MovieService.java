@@ -13,6 +13,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import ua.course.moviesservice.dto.*;
 import ua.course.moviesservice.entity.Director;
 import ua.course.moviesservice.entity.Movie;
+import ua.course.moviesservice.mapper.MovieMapper;
 import ua.course.moviesservice.repository.DirectorRepository;
 import ua.course.moviesservice.repository.MovieRepository;
 
@@ -26,10 +27,12 @@ import java.util.List;
 public class MovieService {
     private final MovieRepository movieRepository;
     private final DirectorRepository directorRepository;
+    private final MovieMapper movieMapper;
 
-    public MovieService(MovieRepository movieRepository, DirectorRepository directorRepository) {
+    public MovieService(MovieRepository movieRepository, DirectorRepository directorRepository, MovieMapper movieMapper) {
         this.movieRepository = movieRepository;
         this.directorRepository = directorRepository;
+        this.movieMapper = movieMapper;
     }
 
     public MovieDetailsDto getByid(Long id){
@@ -37,7 +40,7 @@ public class MovieService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND,
                         "Movie with id " + id + " not found"));
 
-        return mapToDetailsDto(movie);
+        return movieMapper.toDetailsDto(movie);
     }
 
     public MovieDetailsDto create (MovieCreateUpdateDto dto) {
@@ -47,7 +50,7 @@ public class MovieService {
 
         Movie movie = new Movie(dto.getTitle(), dto.getReleaseYear(), director);
         Movie saved = movieRepository.save(movie);
-        return mapToDetailsDto(saved);
+        return movieMapper.toDetailsDto(saved);
     }
 
     public MovieDetailsDto update (Long id, MovieCreateUpdateDto dto){
@@ -63,7 +66,7 @@ public class MovieService {
         movie.setDirector(director);
         movie.setReleaseYear(dto.getReleaseYear());
 
-        return mapToDetailsDto(movie);
+        return movieMapper.toDetailsDto(movie);
     }
 
     public void delete(Long id) {
@@ -74,13 +77,6 @@ public class MovieService {
             );
         }
         movieRepository.deleteById(id);
-    }
-
-    private MovieDetailsDto mapToDetailsDto(Movie movie) {
-        Director director = movie.getDirector();
-        DirectorDto directorDto = new DirectorDto(director.getId(), director.getName());
-
-        return new MovieDetailsDto(movie.getId(), movie.getTitle(), movie.getReleaseYear(), directorDto);
     }
 
 
@@ -99,14 +95,7 @@ public class MovieService {
         );
 
         var items = moviePage.getContent().stream()
-                .map(m -> new MovieListItemDto(
-                        m.getTitle(),
-                        m.getReleaseYear(),
-                        new DirectorDto(
-                                m.getDirector().getId(),
-                                m.getDirector().getName()
-                        )
-                ))
+                .map(movieMapper::toListItemDto)
                 .toList();
 
         return new PagedResultDto<>(items, moviePage.getTotalPages());
@@ -114,88 +103,6 @@ public class MovieService {
 
     private String emptyToNull(String s) {
         return (s == null || s.isBlank()) ? null : s;
-    }
-
-
-
-    public byte[] generateReportCsv(MovieListRequestDto request) {
-        String titleFilter = emptyToNull(request.getTitleContains());
-
-        List<Movie> movies = movieRepository.searchMoviesNoPaging(
-                titleFilter,
-                request.getDirectorId(),
-                request.getYearFrom(),
-                request.getYearTo()
-        );
-
-        StringBuilder sb = new StringBuilder();
-        sb.append("Id,Title,Release_year,DirectorId,DirectorName\n");
-
-        for (Movie m : movies) {
-            sb.append(m.getId()).append(",");
-            String safeTitle = m.getTitle().replace("\"", "\"\"");
-            sb.append("\"").append(safeTitle).append("\"").append(",");
-            sb.append(m.getReleaseYear() != null ? m.getReleaseYear() : "").append(",");
-
-            var director = m.getDirector();
-            sb.append(director.getId()).append(",");
-            String safeDirectorName = director.getName().replace("\"", "\"\"");
-            sb.append("\"").append(safeDirectorName).append("\"").append("\n");
-        }
-
-        return sb.toString().getBytes(StandardCharsets.UTF_8);
-    }
-
-    public MovieImportResultDto importMovies(InputStream jsonStream) {
-        ObjectMapper mapper = new ObjectMapper();
-
-        List<MovieImportDto> items;
-        try {
-            items = mapper.readValue(jsonStream, new TypeReference<List<MovieImportDto>>() {});
-        } catch (Exception e) {
-            throw new ResponseStatusException(
-                    HttpStatus.BAD_REQUEST,
-                    "Invalid JSON file format",
-                    e
-            );
-        }
-
-        int success = 0;
-        int failed = 0;
-        List<MovieImportResultDto.ErrorItem> errors = new ArrayList<>();
-
-        for (int i = 0; i < items.size(); i++) {
-            MovieImportDto dto = items.get(i);
-            try {
-                if (dto.getTitle() == null || dto.getTitle().isBlank()) {
-                    throw new IllegalArgumentException("Title is empty");
-                }
-                if (dto.getReleaseYear() == null) {
-                    throw new IllegalArgumentException("Release year is empty");
-                }
-                if (dto.getDirectorId() == null) {
-                    throw new IllegalArgumentException("DirectorId is empty");
-                }
-
-                Director director = directorRepository.findById(dto.getDirectorId())
-                        .orElseThrow(() -> new IllegalArgumentException(
-                                "Director with id " + dto.getDirectorId() + " not found"
-                        ));
-
-                Movie movie = new Movie();
-                movie.setTitle(dto.getTitle());
-                movie.setReleaseYear(dto.getReleaseYear());
-                movie.setDirector(director);
-
-                movieRepository.save(movie);
-                success++;
-            } catch (Exception ex) {
-                failed++;
-                errors.add(new MovieImportResultDto.ErrorItem(i, ex.getMessage()));
-            }
-        }
-
-        return new MovieImportResultDto(success, failed, errors);
     }
 
 }
