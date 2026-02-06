@@ -1,5 +1,6 @@
 package ua.course.moviesservice.service;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.course.moviesservice.dto.MovieListRequestDto;
@@ -25,12 +26,13 @@ public class ReportService {
     public byte[] generateReportCsv(MovieListRequestDto request) {
         String titleFilter = emptyToNull(request.getTitleContains());
 
-        List<Movie> movies = movieRepository.searchMoviesNoPaging(
+        List<Movie> movies = movieRepository.searchMovies(
                 titleFilter,
                 request.getDirectorId(),
                 request.getYearFrom(),
-                request.getYearTo()
-        );
+                request.getYearTo(),
+                Pageable.unpaged()
+        ).getContent();
 
         StringBuilder sb = new StringBuilder();
         sb.append("Id,Title,Release_year,DirectorId,DirectorName\n");
